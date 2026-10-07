@@ -1,0 +1,15 @@
+flowchart TD
+    A(["planificar algoritmo quantum"]) --> B["algoritmo por defecto = todos<br/>quantum por defecto = 2"]
+    B --> C["Tomar procesos de la tabla<br/>que no estén Terminados"]
+    C --> D{"¿hay procesos?"}
+    D -- "No" --> DE["Mensaje: no hay procesos, usa crear"]
+    D -- "Sí" --> E["Crear Planificador<br/>valida lista no vacía y PIDs únicos"]
+    E --> F{"¿algoritmo = todos?"}
+    F -- "No" --> G["ejecutar algoritmo: fcfs, sjf, rr o prioridad"]
+    G --> H{"¿algoritmo válido?"}
+    H -- "No" --> HE["ValueError: algoritmo desconocido"]
+    H -- "Sí" --> I["Imprimir reporte:<br/>Gantt, tabla de métricas y promedios"]
+    F -- "Sí" --> J["Ejecutar FCFS, SJF, Round Robin y Prioridad<br/>sobre la misma lista sin modificar los PCB"]
+    J --> K["Imprimir reporte de cada algoritmo"]
+    K --> L["Tabla comparativa<br/>espera, respuesta y retorno"]
+    L --> M["Resaltar algoritmo con menor espera promedio"]

@@ -1,0 +1,26 @@
+flowchart TD
+    subgraph ASIG["asignar pid tamano - paginada"]
+        A1(["asignar pid, tamano"]) --> A2{"¿tamano mayor que 0?"}
+        A2 -- "No" --> AE1["ValueError"]
+        A2 -- "Sí" --> A3{"¿el PID ya tiene tabla de páginas?"}
+        A3 -- "Sí" --> AE2["ErrorMemoria: ya asignada"]
+        A3 -- "No" --> A4["páginas = techo de tamano / tam_pagina"]
+        A4 --> A5{"¿páginas mayor que marcos libres?"}
+        A5 -- "Sí" --> AE3["ErrorMemoria: memoria insuficiente<br/>no se reserva ningún marco - atómico"]
+        A5 -- "No" --> A6["Tomar los primeros marcos libres<br/>no necesariamente contiguos"]
+        A6 --> A7["Marcar marcos con el PID dueño"]
+        A7 --> A8["Crear TablaPaginas: página i apunta a marco"]
+        A8 --> A9(["Devolver tabla"])
+    end
+
+    subgraph LIB["liberar pid"]
+        L1(["liberar pid"]) --> L2{"¿existe tabla del PID?"}
+        L2 -- "No" --> LE["ErrorMemoria: sin páginas asignadas"]
+        L2 -- "Sí" --> L3["Quitar la tabla"]
+        L3 --> L4["Marcar todos sus marcos como libres"]
+        L4 --> L5(["Fin"])
+    end
+
+    subgraph INT["fragmentacion_interna pid"]
+        I1["páginas x tam_pagina - tamaño lógico"]
+    end

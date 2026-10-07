@@ -1,0 +1,25 @@
+flowchart LR
+    subgraph ING["Modo ingenuo: espera circular"]
+        direction TB
+        F0["Filósofo 0<br/>tiene T0, espera T1"] --> F1["Filósofo 1<br/>tiene T1, espera T2"]
+        F1 --> F2["Filósofo 2<br/>tiene T2, espera T3"]
+        F2 --> F3["Filósofo 3<br/>tiene T3, espera T4"]
+        F3 --> F4["Filósofo 4<br/>tiene T4, espera T0"]
+        F4 --> F0
+        ING_R["Interbloqueo<br/>cumple las 4 condiciones de Coffman"]
+        F4 -.-> ING_R
+    end
+
+    subgraph ASI["Modo asimétrico: ciclo roto"]
+        direction TB
+        A0["Filósofos 0 a 3<br/>toman izquierdo y luego derecho"]
+        A4["Filósofo 4<br/>toma derecho T0 y luego izquierdo T4"]
+        A0 --> AR["No hay espera circular<br/>al menos un filósofo siempre progresa"]
+        A4 --> AR
+        AR --> AOK["Todos completan sus comidas"]
+    end
+
+    classDef mal fill:#f8d7da,stroke:#b71c1c,color:#000
+    classDef bien fill:#d4edda,stroke:#2e7d32,color:#000
+    class F0,F1,F2,F3,F4,ING_R mal
+    class A0,A4,AR,AOK bien

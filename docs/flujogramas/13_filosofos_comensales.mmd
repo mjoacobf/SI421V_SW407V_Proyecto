@@ -1,0 +1,40 @@
+flowchart TD
+    A(["simular_filosofos modo"]) --> B{"¿modo?"}
+    B -- "otro" --> BE["Uso: asimetrico o ingenuo"]
+    B -- "asimetrico" --> C["asimetrico = True"]
+    B -- "ingenuo" --> D["asimetrico = False"]
+    C --> E["Crear n tenedores Lock, Barrier y evento de interbloqueo"]
+    D --> E
+    E --> F["Lanzar n hilos filósofo"]
+
+    F --> G0
+
+    subgraph FIL["Hilo filósofo i"]
+        G0["izq = i, der = i + 1 mod n"] --> G1{"¿asimétrico<br/>y es el último filósofo?"}
+        G1 -- "Sí" --> G2["primero = der, segundo = izq<br/>orden inverso"]
+        G1 -- "No" --> G3["primero = izq, segundo = der"]
+        G2 --> H0
+        G3 --> H0
+        H0["Para cada comida"] --> H1{"¿interbloqueo detectado?"}
+        H1 -- "Sí" --> HF(["Abandona"])
+        H1 -- "No" --> H2["Pensar"]
+        H2 --> H3["Tomar tenedor primero"]
+        H3 --> H4{"¿modo ingenuo<br/>y primera comida?"}
+        H4 -- "Sí" --> H5["Barrier.wait<br/>todos sostienen su primer tenedor"]
+        H4 -- "No" --> H6
+        H5 --> H6["Pedir tenedor segundo"]
+        H6 --> H7{"¿obtenido?<br/>ingenuo usa timeout"}
+        H7 -- "No" --> H8["Marcar INTERBLOQUEO<br/>liberar primero y abandonar"]
+        H7 -- "Sí" --> H9["COMER<br/>incrementar contador"]
+        H9 --> H10["Soltar segundo y primero"]
+        H10 --> H11{"¿faltan comidas?"}
+        H11 -- "Sí" --> H0
+        H11 -- "No" --> HF2(["Termina todas sus comidas"])
+    end
+
+    H8 --> J
+    HF --> J
+    HF2 --> J["join de todos los hilos"]
+    J --> K{"¿hubo interbloqueo?"}
+    K -- "Sí" --> L["Resumen: INTERBLOQUEO<br/>espera circular"]
+    K -- "No" --> M["Resumen: sin interbloqueo<br/>comidas por filósofo"]

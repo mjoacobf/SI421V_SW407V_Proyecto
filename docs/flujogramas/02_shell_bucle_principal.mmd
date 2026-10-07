@@ -1,0 +1,27 @@
+flowchart TD
+    A(["python src/main.py"]) --> B["Reconfigurar stdin y stdout a UTF-8"]
+    B --> C["Crear Shell<br/>registrar comandos base, procesos, sincronización y memoria"]
+    C --> D["Imprimir banner NexusOS-Sim"]
+    D --> E{"¿shell activo?"}
+    E -- "No" --> Z(["Fin"])
+    E -- "Sí" --> F["Mostrar prompt nexus@sim:ruta$"]
+    F --> G["Leer línea de entrada"]
+    G --> H{"¿EOF?<br/>Ctrl+D o fin de pipe"}
+    H -- "Sí" --> Z
+    H -- "No" --> I["shlex.split de la línea"]
+    I --> J{"¿sintaxis válida?"}
+    J -- "No" --> K["Imprimir error de sintaxis"]
+    J -- "Sí" --> L{"¿línea vacía?"}
+    L -- "Sí" --> E
+    L -- "No" --> M{"¿comando registrado?"}
+    M -- "No" --> N["Imprimir: comando no encontrado"]
+    M -- "Sí" --> O["Ejecutar función del comando con sus argumentos"]
+    O --> P{"¿lanzó excepción?"}
+    P -- "Sí" --> Q["Imprimir error: mensaje<br/>el shell no se cae"]
+    P -- "No" --> R{"¿comando exit?"}
+    R -- "Sí" --> S["activo = False<br/>Apagando NexusOS-Sim"]
+    R -- "No" --> E
+    K --> E
+    N --> E
+    Q --> E
+    S --> E

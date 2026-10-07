@@ -1,0 +1,33 @@
+flowchart TD
+    subgraph ASIG["asignar pid tamano - contigua"]
+        A1(["asignar pid, tamano"]) --> A2{"¿tamano mayor que 0?"}
+        A2 -- "No" --> AE1["ValueError"]
+        A2 -- "Sí" --> A3{"¿el PID ya tiene memoria?"}
+        A3 -- "Sí" --> AE2["ErrorMemoria: ya asignada"]
+        A3 -- "No" --> A4["Buscar huecos libres con tamaño suficiente"]
+        A4 --> A5{"¿hay alguno?"}
+        A5 -- "No" --> A6{"¿libre total mayor o igual a lo pedido?"}
+        A6 -- "Sí" --> AE3["Error: FRAGMENTACIÓN EXTERNA<br/>hay espacio total pero no contiguo"]
+        A6 -- "No" --> AE4["Error: memoria insuficiente"]
+        A5 -- "Sí" --> A7{"¿estrategia?"}
+        A7 -- "first" --> A8["Primer hueco que cabe"]
+        A7 -- "best" --> A9["Hueco más pequeño que cabe"]
+        A7 -- "worst" --> A10["Hueco más grande"]
+        A8 --> A11
+        A9 --> A11
+        A10 --> A11{"¿hueco mayor que lo pedido?"}
+        A11 -- "Sí" --> A12["Dividir: crear bloque libre con el sobrante"]
+        A11 -- "No" --> A13
+        A12 --> A13["Marcar bloque como ocupado por el PID"]
+        A13 --> A14(["Devolver dirección base"])
+    end
+
+    subgraph LIB["liberar pid"]
+        L1(["liberar pid"]) --> L2{"¿existe bloque del PID?"}
+        L2 -- "No" --> LE["ErrorMemoria: sin memoria contigua"]
+        L2 -- "Sí" --> L3["Marcar bloque como libre"]
+        L3 --> L4["Recorrer bloques y fusionar huecos adyacentes"]
+        L4 --> L5(["Fin"])
+    end
+
+    FRAG["fragmentación externa = libre total - hueco mayor"]

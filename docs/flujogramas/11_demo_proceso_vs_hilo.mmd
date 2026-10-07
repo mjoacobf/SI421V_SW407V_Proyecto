@@ -1,0 +1,26 @@
+flowchart TD
+    A(["comando hilos"]) --> B["demo_fork"]
+    A --> H["demo_hilos"]
+
+    subgraph PROCESOS["Procesos - memoria aislada"]
+        B --> B1["Crear proceso padre"]
+        B1 --> B2["fork: hijo recibe copia profunda de PC y registros"]
+        B2 --> B3["Hijo modifica AX"]
+        B3 --> B4["El padre NO ve el cambio"]
+    end
+
+    subgraph HILOS["Hilos - memoria compartida"]
+        H --> H1["Crear contador compartido y un Lock"]
+        H1 --> H2["Lanzar N hilos threading"]
+        H2 --> H3["Cada hilo: adquirir Lock"]
+        H3 --> H4["Incrementar contador"]
+        H4 --> H5["Liberar Lock"]
+        H5 --> H6{"¿más incrementos?"}
+        H6 -- "Sí" --> H3
+        H6 -- "No" --> H7["Hilo acumula líneas de salida sin imprimir"]
+        H7 --> H8["Hilo principal: join de todos"]
+        H8 --> H9["Imprimir líneas y verificar total = esperado"]
+    end
+
+    B4 --> FIN["Conclusión: procesos aíslan, hilos comparten<br/>y requieren exclusión mutua"]
+    H9 --> FIN

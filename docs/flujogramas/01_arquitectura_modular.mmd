@@ -1,0 +1,29 @@
+flowchart TB
+    USR(["Usuario"])
+
+    subgraph UM["Modo usuario"]
+        MAIN["main.py<br/>punto de entrada, UTF-8"]
+        SHELL["shell.py<br/>Shell CLI y tabla de comandos"]
+        SFS["SistemaArchivosSimulado<br/>ls, mkdir, cd, pwd"]
+    end
+
+    subgraph KM["Núcleo simulado kernel"]
+        PROC["procesos.py<br/>PCB, 5 estados, GestorProcesos"]
+        PLAN["planificador.py<br/>FCFS, SJF, RR, Prioridad"]
+        SINC["sincronizacion.py<br/>Productor-Consumidor, Filósofos"]
+        MEM["memoria.py<br/>GestorMemoriaContigua, GestorPaginacion"]
+        DEMO["demo_hilos.py<br/>fork vs threading"]
+    end
+
+    USR -->|"escribe comandos"| SHELL
+    MAIN -->|"Shell.ejecutar"| SHELL
+    SHELL --> SFS
+    SHELL -->|"crear, fork, exec, kill, despachar"| PROC
+    SHELL -->|"planificar"| PLAN
+    SHELL -->|"simular_productor, simular_filosofos"| SINC
+    SHELL -->|"asignar, liberar, traducir, memoria"| MEM
+    SHELL -->|"hilos"| DEMO
+    PLAN -->|"lee llegada, rafaga, prioridad"| PROC
+    MEM -->|"traducir_direccion acepta Proceso"| PROC
+    SHELL -->|"kill libera memoria"| MEM
+    SHELL -.->|"errores capturados: error: ..."| USR

@@ -1,0 +1,21 @@
+flowchart LR
+    ENT["Entrada clásica en t = 0<br/>P1 transferencia pesada: ráfaga 24<br/>P2 consulta de saldo: ráfaga 3<br/>P3 consulta de saldo: ráfaga 3"]
+
+    ENT --> FC["FCFS<br/>Gantt: P1 0-24, P2 24-27, P3 27-30"]
+    ENT --> SJ["SJF<br/>Gantt: P2 0-3, P3 3-6, P1 6-30"]
+    ENT --> RR["Round Robin q = 4<br/>P1 se expropia cada 4 unidades<br/>P2 y P3 terminan pronto"]
+
+    FC --> FR["Espera prom. 17.00<br/>Respuesta prom. 17.00<br/>Efecto convoy"]
+    SJ --> SR["Espera prom. 3.00<br/>Respuesta prom. 3.00<br/>Mejor espera"]
+    RR --> RRR["Espera prom. 5.67<br/>Respuesta prom. 3.67<br/>Equitativo e interactivo"]
+
+    FR --> CON["Conclusión para NexusBank:<br/>las consultas de saldo no deben esperar a las transacciones pesadas"]
+    SR --> CON
+    RRR --> CON
+
+    classDef mal fill:#f8d7da,stroke:#b71c1c,color:#000
+    classDef bien fill:#d4edda,stroke:#2e7d32,color:#000
+    classDef medio fill:#fff3cd,stroke:#b58900,color:#000
+    class FC,FR mal
+    class SJ,SR bien
+    class RR,RRR medio

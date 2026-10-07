@@ -1,0 +1,17 @@
+flowchart TD
+    A(["fcfs, sjf o prioridad"]) --> B["Elegir criterio de selección<br/>FCFS: llegada, pid<br/>SJF: ráfaga, llegada, pid<br/>Prioridad: prioridad, llegada, pid"]
+    B --> C["Ordenar procesos por llegada, pid<br/>t = 0, i = 0, listos = vacío"]
+    C --> D{"¿quedan por llegar<br/>o hay listos?"}
+    D -- "No" --> R["Fusionar segmentos contiguos del Gantt"]
+    D -- "Sí" --> E["Mover a listos todos los procesos<br/>con llegada menor o igual a t"]
+    E --> F{"¿listos vacío?"}
+    F -- "Sí" --> G["CPU ociosa:<br/>t = llegada del siguiente proceso"]
+    G --> D
+    F -- "No" --> H["p = proceso con menor clave<br/>según el criterio"]
+    H --> I["Quitar p de listos<br/>inicio[p] = t"]
+    I --> J["Registrar segmento Gantt pid, t, t + ráfaga"]
+    J --> K["t = t + ráfaga<br/>fin[p] = t"]
+    K --> D
+    R --> M["Por proceso:<br/>retorno = fin - llegada<br/>espera = retorno - ráfaga<br/>respuesta = inicio - llegada"]
+    M --> N["Calcular promedios de espera, respuesta y retorno"]
+    N --> O(["Devolver Resultado"])

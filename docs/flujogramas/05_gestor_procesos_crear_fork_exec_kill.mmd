@@ -1,0 +1,38 @@
+flowchart TD
+    subgraph CREAR["crear nombre rafaga prioridad llegada"]
+        C1["Validar rafaga mayor que 0<br/>y llegada mayor o igual a 0"] --> C2["Asignar PID nuevo"]
+        C2 --> C3["Registrar en tabla de procesos"]
+        C3 --> C4["Estado Nuevo a Listo<br/>agregar a cola listos"]
+    end
+
+    subgraph FORK["fork pid"]
+        F1["Obtener padre"] --> F2{"¿padre Terminado?"}
+        F2 -- "Sí" --> FE["ErrorProceso: no se puede hacer fork"]
+        F2 -- "No" --> F3["deepcopy del PCB<br/>copia PC y registros"]
+        F3 --> F4["Hijo: PID nuevo, ppid = padre,<br/>estado Nuevo"]
+        F4 --> F5["Admitir hijo: Nuevo a Listo"]
+        F5 --> F6["Padre e hijo con registros aislados"]
+    end
+
+    subgraph EXEC["exec pid nombre rafaga"]
+        E1["Obtener proceso"] --> E2{"¿Terminado?"}
+        E2 -- "Sí" --> EE["ErrorProceso"]
+        E2 -- "No" --> E3{"¿rafaga dada y menor o igual a 0?"}
+        E3 -- "Sí" --> EE2["ValueError"]
+        E3 -- "No" --> E4["Cambiar nombre de imagen"]
+        E4 --> E5["Reiniciar PC = 0 y registros AX-DX = 0"]
+        E5 --> E6["Conserva PID y PPID"]
+    end
+
+    subgraph KILL["kill pid"]
+        K1["gestor.terminar pid"] --> K2{"¿ya Terminado?"}
+        K2 -- "Sí" --> KE["ErrorProceso"]
+        K2 -- "No" --> K3{"¿dónde está?"}
+        K3 -- "en ejecución" --> K4["Liberar CPU"]
+        K3 -- "cola listos" --> K5["Quitar de listos"]
+        K3 -- "cola bloqueados" --> K6["Quitar de bloqueados"]
+        K4 --> K7["Forzar estado Terminado"]
+        K5 --> K7
+        K6 --> K7
+        K7 --> K8["Shell libera memoria contigua y paginada del PID"]
+    end

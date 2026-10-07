@@ -1,0 +1,21 @@
+flowchart TD
+    A(["round_robin con quantum"]) --> B{"¿quantum mayor que 0?"}
+    B -- "No" --> BE["ValueError: el quantum debe ser positivo"]
+    B -- "Sí" --> C["Ordenar por llegada, pid<br/>restante[pid] = ráfaga<br/>t = 0, i = 0, cola vacía"]
+    C --> D["admitir: encolar procesos con llegada menor o igual a t"]
+    D --> E{"¿cola no vacía<br/>o quedan por llegar?"}
+    E -- "No" --> Z["Fusionar segmentos del Gantt y calcular métricas"]
+    E -- "Sí" --> F{"¿cola vacía?"}
+    F -- "Sí" --> G["CPU ociosa: t = próxima llegada<br/>admitir"]
+    F -- "No" --> H
+    G --> H["p = sacar primero de la cola"]
+    H --> I["inicio[p] solo la primera vez = t"]
+    I --> J["uso = mínimo entre quantum y restante[p]"]
+    J --> K["Gantt: pid, t, t + uso<br/>t = t + uso<br/>restante[p] = restante[p] - uso"]
+    K --> L["admitir: nuevas llegadas entran a la cola<br/>ANTES que el proceso expropiado"]
+    L --> M{"¿restante[p] mayor que 0?"}
+    M -- "Sí" --> N["Reencolar p al final"]
+    M -- "No" --> O["fin[p] = t"]
+    N --> E
+    O --> E
+    Z --> R(["Devolver Resultado"])

@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> Nuevo: Proceso creado
+    Nuevo --> Listo: crear / admitir
+    Listo --> Ejecucion: despachar - CPU libre
+    Ejecucion --> Listo: expropiar - fin de quantum
+    Ejecucion --> Bloqueado: bloquear - espera de E/S
+    Bloqueado --> Listo: desbloquear - evento ocurrio
+    Ejecucion --> Terminado: fin de rafaga
+    Listo --> Terminado: kill - senal del kernel
+    Bloqueado --> Terminado: kill - senal del kernel
+    Terminado --> [*]
+
+    note right of Terminado
+        Cualquier otra transicion lanza ErrorProceso
+        La CPU es unica: solo un proceso en Ejecucion
+    end note
