@@ -1,5 +1,6 @@
 flowchart TD
-    A(["simular_filosofos modo"]) --> B{"¿modo?"}
+    INI(("Inicio")) --> A["simular_filosofos modo"]
+    A --> B{"¿modo?"}
     B -- "otro" --> BE["Uso: asimetrico o ingenuo"]
     B -- "asimetrico" --> C["asimetrico = True"]
     B -- "ingenuo" --> D["asimetrico = False"]
@@ -38,3 +39,12 @@ flowchart TD
     J --> K{"¿hubo interbloqueo?"}
     K -- "Sí" --> L["Resumen: INTERBLOQUEO<br/>espera circular"]
     K -- "No" --> M["Resumen: sin interbloqueo<br/>comidas por filósofo"]
+    FIN(("Fin"))
+    BE --> FIN
+    L --> FIN
+    M --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

@@ -1,6 +1,7 @@
 flowchart TD
     subgraph ASIG["asignar pid tamano - paginada"]
-        A1(["asignar pid, tamano"]) --> A2{"¿tamano mayor que 0?"}
+        AI(("Inicio")) --> A1["asignar pid, tamano"]
+        A1 --> A2{"¿tamano mayor que 0?"}
         A2 -- "No" --> AE1["ValueError"]
         A2 -- "Sí" --> A3{"¿el PID ya tiene tabla de páginas?"}
         A3 -- "Sí" --> AE2["ErrorMemoria: ya asignada"]
@@ -10,17 +11,28 @@ flowchart TD
         A5 -- "No" --> A6["Tomar los primeros marcos libres<br/>no necesariamente contiguos"]
         A6 --> A7["Marcar marcos con el PID dueño"]
         A7 --> A8["Crear TablaPaginas: página i apunta a marco"]
-        A8 --> A9(["Devolver tabla"])
+        A8 --> A9["Devolver tabla"]
+        A9 --> AF(("Fin"))
+        AE1 --> AF
+        AE2 --> AF
+        AE3 --> AF
     end
 
     subgraph LIB["liberar pid"]
-        L1(["liberar pid"]) --> L2{"¿existe tabla del PID?"}
+        LI(("Inicio")) --> L1["liberar pid"]
+        L1 --> L2{"¿existe tabla del PID?"}
         L2 -- "No" --> LE["ErrorMemoria: sin páginas asignadas"]
         L2 -- "Sí" --> L3["Quitar la tabla"]
         L3 --> L4["Marcar todos sus marcos como libres"]
-        L4 --> L5(["Fin"])
+        L4 --> L5(("Fin"))
+        LE --> L5
     end
 
     subgraph INT["fragmentacion_interna pid"]
         I1["páginas x tam_pagina - tamaño lógico"]
     end
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class AI,LI inicio
+    class AF,L5 fin

@@ -1,5 +1,6 @@
 flowchart TD
-    A(["fcfs, sjf o prioridad"]) --> B["Elegir criterio de selección<br/>FCFS: llegada, pid<br/>SJF: ráfaga, llegada, pid<br/>Prioridad: prioridad, llegada, pid"]
+    INI(("Inicio")) --> A["fcfs, sjf o prioridad"]
+    A --> B["Elegir criterio de selección<br/>FCFS: llegada, pid<br/>SJF: ráfaga, llegada, pid<br/>Prioridad: prioridad, llegada, pid"]
     B --> C["Ordenar procesos por llegada, pid<br/>t = 0, i = 0, listos = vacío"]
     C --> D{"¿quedan por llegar<br/>o hay listos?"}
     D -- "No" --> R["Fusionar segmentos contiguos del Gantt"]
@@ -14,4 +15,10 @@ flowchart TD
     K --> D
     R --> M["Por proceso:<br/>retorno = fin - llegada<br/>espera = retorno - ráfaga<br/>respuesta = inicio - llegada"]
     M --> N["Calcular promedios de espera, respuesta y retorno"]
-    N --> O(["Devolver Resultado"])
+    N --> O["Devolver Resultado"]
+    O --> FIN(("Fin"))
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

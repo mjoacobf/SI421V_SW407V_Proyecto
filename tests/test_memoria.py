@@ -109,5 +109,12 @@ class TestPaginacion(unittest.TestCase):
             GestorPaginacion(0, 10)
 
 
+class TestUnidades(unittest.TestCase):
+    def test_mapas_indican_bytes(self):
+        self.assertIn("1000 B", GestorMemoriaContigua(1000).mapa_texto())
+        self.assertIn("B = bytes", GestorMemoriaContigua(1000).mapa_texto())
+        self.assertIn("256 B", GestorPaginacion(4, 256).mapa_texto())
+
+
 if __name__ == "__main__":
     unittest.main()

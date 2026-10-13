@@ -1,6 +1,8 @@
 flowchart TD
-    A(["round_robin con quantum"]) --> B{"¿quantum mayor que 0?"}
+    INI(("Inicio")) --> A["round_robin con quantum"]
+    A --> B{"¿quantum mayor que 0?"}
     B -- "No" --> BE["ValueError: el quantum debe ser positivo"]
+    BE --> FIN(("Fin"))
     B -- "Sí" --> C["Ordenar por llegada, pid<br/>restante[pid] = ráfaga<br/>t = 0, i = 0, cola vacía"]
     C --> D["admitir: encolar procesos con llegada menor o igual a t"]
     D --> E{"¿cola no vacía<br/>o quedan por llegar?"}
@@ -18,4 +20,10 @@ flowchart TD
     M -- "No" --> O["fin[p] = t"]
     N --> E
     O --> E
-    Z --> R(["Devolver Resultado"])
+    Z --> R["Devolver Resultado"]
+    R --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

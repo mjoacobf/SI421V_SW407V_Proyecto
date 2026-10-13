@@ -83,6 +83,14 @@ class TestPlanificador(unittest.TestCase):
         self.assertIn("Respuesta promedio", txt)
         self.assertIn("Menor espera promedio", plan.comparativa(plan.todos()))
 
+    def test_reportes_indican_unidad_de_tiempo(self):
+        plan = Planificador(lote((3, 0, 0), (2, 0, 0)))
+        self.assertIn(" ms", plan.reporte(plan.fcfs()))
+        comp = plan.comparativa(plan.todos())
+        self.assertIn("ESPERA (ms)", comp)
+        self.assertIn("RESPUESTA (ms)", comp)
+        self.assertIn("RETORNO (ms)", comp)
+
 
 if __name__ == "__main__":
     unittest.main()

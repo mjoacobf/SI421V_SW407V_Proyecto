@@ -1,5 +1,6 @@
 flowchart TD
-    START(["Comando de archivos"]) --> CMD{"¿Cuál comando?"}
+    INI(("Inicio")) --> START["Comando de archivos"]
+    START --> CMD{"¿Cuál comando?"}
 
     CMD -- "ls" --> LS["Listar directorio actual ordenado<br/>imprimir nombre/"]
     CMD -- "pwd" --> PWD["Imprimir / + ruta actual"]
@@ -22,3 +23,17 @@ flowchart TD
     ME1 --> SH["Shell captura y muestra error:"]
     ME2 --> SH
     CE --> SH
+    FIN(("Fin"))
+    LS --> FIN
+    PWD --> FIN
+    M3 --> FIN
+    C2 --> FIN
+    C4 --> FIN
+    C5 --> FIN
+    C7 --> FIN
+    SH --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

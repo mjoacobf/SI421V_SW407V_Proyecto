@@ -1,5 +1,6 @@
 flowchart TD
-    A(["simular_productor<br/>productores, consumidores, items, capacidad"]) --> B{"¿todos los parámetros mayores que 0?"}
+    INI(("Inicio")) --> A["simular_productor<br/>productores, consumidores, items, capacidad"]
+    A --> B{"¿todos los parámetros mayores que 0?"}
     B -- "No" --> BE["ValueError"]
     B -- "Sí" --> C["Crear búfer acotado deque<br/>mutex = Semaphore 1<br/>vacios = Semaphore capacidad<br/>llenos = Semaphore 0"]
     C --> D["Repartir consumos totales entre consumidores<br/>divmod: cada uno recibe su cuota"]
@@ -39,3 +40,12 @@ flowchart TD
     NOTA["Orden vacios o llenos antes de mutex<br/>evita interbloqueo"]
     NOTA -.-> P1
     NOTA -.-> C1
+    FIN(("Fin"))
+    BE --> FIN
+    OK --> FIN
+    KO --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

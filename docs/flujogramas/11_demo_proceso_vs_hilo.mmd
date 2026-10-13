@@ -1,5 +1,6 @@
 flowchart TD
-    A(["comando hilos"]) --> B["demo_fork"]
+    INI(("Inicio")) --> A["comando hilos"]
+    A --> B["demo_fork"]
     A --> H["demo_hilos"]
 
     subgraph PROCESOS["Procesos - memoria aislada"]
@@ -22,5 +23,11 @@ flowchart TD
         H8 --> H9["Imprimir líneas y verificar total = esperado"]
     end
 
-    B4 --> FIN["Conclusión: procesos aíslan, hilos comparten<br/>y requieren exclusión mutua"]
-    H9 --> FIN
+    B4 --> CON["Conclusión: procesos aíslan, hilos comparten<br/>y requieren exclusión mutua"]
+    CON --> FIN(("Fin"))
+    H9 --> CON
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

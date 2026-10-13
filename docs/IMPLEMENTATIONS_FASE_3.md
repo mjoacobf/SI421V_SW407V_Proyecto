@@ -44,3 +44,4 @@ Cubre las Semanas 5 y 6 del [PLAN_IMPLEMENTACIÓN_1](PLAN_IMPLEMENTACIÓN_1.md).
 ## Notas
 * El plan no incluye aún reemplazo de páginas (FIFO/LRU/Óptimo, Módulo 3 de la propuesta, semana 7) ni memoria virtual con fallos de página; son el siguiente paso natural.
 * Una corrección durante la fase: una prueba de paginación tenía mal calculados los marcos esperados (error del test, no del código).
+* Actualización 13-10-2026: los mapas de memoria y reportes del planificador ahora indican unidades (B y ms) y hay 2 pruebas más (40 en total); ver [IMPLEMENTATIONS_OBSERVACIONES_13-10-2026](IMPLEMENTATIONS_OBSERVACIONES_13-10-2026.md).

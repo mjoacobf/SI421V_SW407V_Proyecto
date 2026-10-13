@@ -1,23 +1,39 @@
 flowchart TD
     subgraph DESP["despachar"]
-        D1{"¿CPU ocupada?"} -- "Sí" --> DE["ErrorProceso: CPU ocupada por PID"]
+        DI(("Inicio")) --> D1{"¿CPU ocupada?"}
+        D1 -- "Sí" --> DE["ErrorProceso: CPU ocupada por PID"]
         D1 -- "No" --> D2{"¿cola listos vacía?"}
         D2 -- "Sí" --> D3["Mensaje: no hay procesos Listos"]
         D2 -- "No" --> D4["Sacar primer proceso de listos"]
         D4 --> D5["Estado Listo a Ejecución"]
         D5 --> D6["en_ejecucion = proceso"]
+        D6 --> DF(("Fin"))
+        DE --> DF
+        D3 --> DF
     end
 
     subgraph LIB["expropiar o bloquear pid"]
-        L1{"¿el PID está en ejecución?"} -- "No" --> LE["ErrorProceso: no está en ejecución"]
+        LI(("Inicio")) --> L1{"¿el PID está en ejecución?"}
+        L1 -- "No" --> LE["ErrorProceso: no está en ejecución"]
         L1 -- "Sí" --> L2["Liberar CPU: en_ejecucion = None"]
         L2 --> L3{"¿operación?"}
         L3 -- "expropiar" --> L4["Estado Ejecución a Listo<br/>al final de cola listos"]
         L3 -- "bloquear" --> L5["Estado Ejecución a Bloqueado<br/>agregar a cola bloqueados"]
+        L4 --> LF(("Fin"))
+        L5 --> LF
+        LE --> LF
     end
 
     subgraph DESB["desbloquear pid"]
-        B1{"¿está en cola bloqueados?"} -- "No" --> BE["ErrorProceso: no está bloqueado"]
+        BI(("Inicio")) --> B1{"¿está en cola bloqueados?"}
+        B1 -- "No" --> BE["ErrorProceso: no está bloqueado"]
         B1 -- "Sí" --> B2["Quitar de bloqueados"]
         B2 --> B3["Estado Bloqueado a Listo<br/>al final de cola listos"]
+        B3 --> BF(("Fin"))
+        BE --> BF
     end
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class DI,LI,BI inicio
+    class DF,LF,BF fin

@@ -1,5 +1,6 @@
 flowchart TD
-    A(["planificar algoritmo quantum"]) --> B["algoritmo por defecto = todos<br/>quantum por defecto = 2"]
+    INI(("Inicio")) --> A["planificar algoritmo quantum"]
+    A --> B["algoritmo por defecto = todos<br/>quantum por defecto = 2"]
     B --> C["Tomar procesos de la tabla<br/>que no estén Terminados"]
     C --> D{"¿hay procesos?"}
     D -- "No" --> DE["Mensaje: no hay procesos, usa crear"]
@@ -13,3 +14,13 @@ flowchart TD
     J --> K["Imprimir reporte de cada algoritmo"]
     K --> L["Tabla comparativa<br/>espera, respuesta y retorno"]
     L --> M["Resaltar algoritmo con menor espera promedio"]
+    FIN(("Fin"))
+    DE --> FIN
+    HE --> FIN
+    I --> FIN
+    M --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

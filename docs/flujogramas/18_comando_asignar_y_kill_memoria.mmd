@@ -1,5 +1,6 @@
 flowchart TD
-    A(["asignar pid tamano tipo"]) --> B{"¿2 a 3 argumentos?"}
+    INI(("Inicio")) --> A["asignar pid tamano tipo"]
+    A --> B{"¿2 a 3 argumentos?"}
     B -- "No" --> BE["Mostrar uso"]
     B -- "Sí" --> C["tipo por defecto = paginada"]
     C --> D{"¿tipo contigua o paginada?"}
@@ -9,19 +10,33 @@ flowchart TD
     E -- "Sí" --> F{"¿proceso Terminado?"}
     F -- "Sí" --> FE["Mensaje: el PID ya terminó"]
     F -- "No" --> G{"¿tipo?"}
-    G -- "contigua" --> H["mem_contigua.asignar<br/>1000 unidades"]
-    G -- "paginada" --> I["mem_paginada.asignar<br/>16 marcos x 256 bytes"]
+    G -- "contigua" --> H["mem_contigua.asignar<br/>1000 B"]
+    G -- "paginada" --> I["mem_paginada.asignar<br/>16 marcos x 256 B"]
     H --> J["Imprimir dirección base"]
     I --> K["Imprimir páginas y marcos"]
 
     subgraph KILL["kill pid"]
         direction TB
-        K1["gestor.terminar pid"] --> K2["Intentar liberar en mem_contigua"]
+        KI(("Inicio")) --> K1["gestor.terminar pid"] --> K2["Intentar liberar en mem_contigua"]
         K2 --> K3["Intentar liberar en mem_paginada"]
         K3 --> K4["Ignorar ErrorMemoria si no tenía memoria"]
+        K4 --> KF(("Fin"))
     end
 
     subgraph MAPA["memoria"]
         direction TB
-        M1["Mapa contigua:<br/>bloques, libre total, hueco mayor, fragmentación"] --> M2["Mapa paginado:<br/>marcos y tablas de páginas"]
+        MI(("Inicio")) --> M1["Mapa contigua:<br/>bloques, libre total, hueco mayor, fragmentación"] --> M2["Mapa paginado:<br/>marcos y tablas de páginas"]
+        M2 --> MF(("Fin"))
     end
+    FIN(("Fin"))
+    BE --> FIN
+    DE --> FIN
+    EE --> FIN
+    FE --> FIN
+    J --> FIN
+    K --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI,KI,MI inicio
+    class FIN,KF,MF fin

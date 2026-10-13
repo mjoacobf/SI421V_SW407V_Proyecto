@@ -26,6 +26,15 @@ Un archivo `.mmd` por proceso, derivados del caso (`README.md`), la propuesta, e
 | 19 | `19_hoja_de_ruta_fases_y_semanas` | flowchart | Fases 1–3 hechas y módulos pendientes (verde = hecho, amarillo = pendiente) |
 | 20 | `20_secuencia_sesion_tipica` | sequence | Sesión de ejemplo Usuario ↔ Shell ↔ módulos |
 
+## Convención de inicio y fin
+
+Por indicación del profesor (13-10-2026), todo flujo lleva un círculo **verde `Inicio`** y un círculo **rojo `Fin`**
+(clases `inicio` y `fin`), y todas las ramas terminales convergen en un único `Fin`.
+
+* Con marcadores: `02, 03, 05, 06, 07, 08, 09, 11, 12, 13, 15, 16, 17, 18`.
+* Sin marcadores (diagramas de relaciones, estructura, estados o acompañados de tabla/descripción): `00, 01, 04, 10, 14, 19, 20`.
+* Unidades: tiempo en **ms** y memoria en **B** (bytes). Detalle en [`IMPLEMENTATIONS_OBSERVACIONES_13-10-2026`](../IMPLEMENTATIONS_OBSERVACIONES_13-10-2026.md).
+
 ## Cómo usarlos
 
 * **Miro**: Apps → *Mermaid* (o `Diagramming → Mermaid`), pegar el contenido del `.mmd` y *Insert*; se convierte en figuras editables. Los diagramas tipo `flowchart` y `sequenceDiagram` son los mejor soportados; si un `stateDiagram` (04) no se importa, usar la imagen exportada.

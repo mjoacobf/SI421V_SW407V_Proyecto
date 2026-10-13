@@ -19,6 +19,9 @@ from typing import Callable
 
 from procesos import Proceso
 
+# Unidad de las métricas: 1 unidad de tiempo simulada = 1 milisegundo (ms).
+UNIDAD_TIEMPO = "ms"
+
 
 @dataclass
 class MetricasProceso:
@@ -175,20 +178,24 @@ class Planificador:
         for m in r.metricas:
             lineas.append(f"{m.pid:>4} {m.nombre:<12} {m.llegada:>4} {m.rafaga:>4} {m.inicio:>4} "
                           f"{m.finalizacion:>4} {m.retorno:>4} {m.espera:>4} {m.respuesta:>4}")
-        lineas.append(f"Espera promedio:    {r.espera_promedio:.2f}")
-        lineas.append(f"Respuesta promedio: {r.respuesta_promedio:.2f}")
-        lineas.append(f"Retorno promedio:   {r.retorno_promedio:.2f}")
+        u = UNIDAD_TIEMPO
+        lineas.append(f"Espera promedio:    {r.espera_promedio:.2f} {u}")
+        lineas.append(f"Respuesta promedio: {r.respuesta_promedio:.2f} {u}")
+        lineas.append(f"Retorno promedio:   {r.retorno_promedio:.2f} {u}")
+        lineas.append(f"Leyenda: LLEG=llegada, RAF=ráfaga, INI=inicio, FIN=finalización, "
+                      f"RET=retorno, ESP=espera, RESP=respuesta (todo en {u})")
         return "\n".join(lineas)
 
     @staticmethod
     def comparativa(resultados: list[Resultado]) -> str:
-        lineas = ["=== Comparativa ===",
-                  f"{'ALGORITMO':<20} {'ESPERA':>8} {'RESPUESTA':>10} {'RETORNO':>8}"]
+        u = UNIDAD_TIEMPO
+        lineas = [f"=== Comparativa (tiempos promedio en {u}) ===",
+                  f"{'ALGORITMO':<20} {'ESPERA ('+u+')':>11} {'RESPUESTA ('+u+')':>14} {'RETORNO ('+u+')':>12}"]
         for r in resultados:
-            lineas.append(f"{r.algoritmo:<20} {r.espera_promedio:>8.2f} "
-                          f"{r.respuesta_promedio:>10.2f} {r.retorno_promedio:>8.2f}")
+            lineas.append(f"{r.algoritmo:<20} {r.espera_promedio:>11.2f} "
+                          f"{r.respuesta_promedio:>14.2f} {r.retorno_promedio:>12.2f}")
         mejor = min(resultados, key=lambda r: r.espera_promedio)
-        lineas.append(f"Menor espera promedio: {mejor.algoritmo}")
+        lineas.append(f"Menor espera promedio: {mejor.algoritmo} ({mejor.espera_promedio:.2f} {u})")
         return "\n".join(lineas)
 
 
@@ -198,4 +205,4 @@ def _gantt_texto(gantt: list[tuple[int, int, int]]) -> str:
     partes = [f"{gantt[0][1]}"]
     for pid, _, b in gantt:
         partes.append(f"| P{pid} | {b}")
-    return " ".join(partes)
+    return " ".join(partes) + f"  ({UNIDAD_TIEMPO})"

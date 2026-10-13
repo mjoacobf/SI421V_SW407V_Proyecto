@@ -43,7 +43,7 @@ class GestorMemoriaContigua:
         self.bloques: list[Bloque] = [Bloque(0, tamano_total)]
 
     def asignar(self, pid: int, tamano: int) -> int:
-        """Reserva ``tamano`` unidades contiguas; devuelve la dirección base."""
+        """Reserva ``tamano`` bytes contiguos; devuelve la dirección base."""
         if tamano <= 0:
             raise ValueError("el tamaño solicitado debe ser positivo")
         if any(b.pid == pid for b in self.bloques):
@@ -98,12 +98,13 @@ class GestorMemoriaContigua:
         return self.libre_total() - self.hueco_mayor()
 
     def mapa_texto(self) -> str:
-        lineas = [f"Memoria contigua ({self.tamano_total} u., {self.estrategia}-fit)"]
+        lineas = [f"Memoria contigua ({self.tamano_total} B, {self.estrategia}-fit)"]
         for b in self.bloques:
             dueno = "LIBRE" if b.pid is None else f"PID {b.pid}"
-            lineas.append(f"  [{b.inicio:>5} - {b.fin - 1:>5}] {b.tamano:>5} u.  {dueno}")
-        lineas.append(f"  Libre total: {self.libre_total()}  |  Hueco mayor: {self.hueco_mayor()}  "
-                      f"|  Fragmentación externa: {self.fragmentacion_externa()}")
+            lineas.append(f"  [{b.inicio:>5} - {b.fin - 1:>5}] {b.tamano:>5} B  {dueno}")
+        lineas.append(f"  Libre total: {self.libre_total()} B  |  Hueco mayor: {self.hueco_mayor()} B  "
+                      f"|  Fragmentación externa: {self.fragmentacion_externa()} B")
+        lineas.append("  Leyenda: B = bytes")
         return "\n".join(lineas)
 
 
@@ -176,7 +177,7 @@ class GestorPaginacion:
         return tabla.marcos[pagina] * self.tam_pagina + desplazamiento
 
     def mapa_texto(self) -> str:
-        lineas = [f"Paginación ({self.num_marcos} marcos x {self.tam_pagina} bytes, libres: {self.marcos_libres()})"]
+        lineas = [f"Paginación ({self.num_marcos} marcos x {self.tam_pagina} B, libres: {self.marcos_libres()} marcos)"]
         for i, dueno in enumerate(self.marcos):
             if dueno is None:
                 lineas.append(f"  marco {i:>3}: libre")
@@ -184,7 +185,7 @@ class GestorPaginacion:
                 pagina = self.tablas[dueno].marcos.index(i)
                 lineas.append(f"  marco {i:>3}: PID {dueno} página {pagina}")
         for pid, tabla in sorted(self.tablas.items()):
-            lineas.append(f"  Tabla de páginas PID {pid} ({tabla.tamano_logico} bytes, "
-                          f"frag. interna {self.fragmentacion_interna(pid)}): "
+            lineas.append(f"  Tabla de páginas PID {pid} ({tabla.tamano_logico} B, "
+                          f"frag. interna {self.fragmentacion_interna(pid)} B): "
                           + ", ".join(f"p{p}->m{m}" for p, m in enumerate(tabla.marcos)))
         return "\n".join(lineas)

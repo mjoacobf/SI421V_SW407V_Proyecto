@@ -17,7 +17,7 @@ from procesos import Estado, GestorProcesos
 from sincronizacion import filosofos, productor_consumidor
 
 PROMPT = "nexus@sim"
-TAM_MEMORIA_CONTIGUA = 1000   # unidades de la RAM con particiones variables
+TAM_MEMORIA_CONTIGUA = 1000   # bytes (B) de la RAM con particiones variables
 NUM_MARCOS = 16               # RAM paginada: 16 marcos x 256 bytes
 TAM_PAGINA = 256
 
@@ -105,7 +105,7 @@ class Shell:
     def _registrar_comandos_procesos(self) -> None:
         self.registrar("ps", self.cmd_ps, "ps                Lista la tabla de procesos")
         self.registrar("crear", self.cmd_crear,
-                       "crear <nombre> <rafaga> [prioridad] [llegada]   Crea un proceso")
+                       "crear <nombre> <rafaga_ms> [prioridad] [llegada_ms]   Crea un proceso")
         self.registrar("fork", self.cmd_fork, "fork <pid>        Duplica un proceso")
         self.registrar("exec", self.cmd_exec, "exec <pid> <nombre> [rafaga]   Reemplaza la imagen de un proceso")
         self.registrar("kill", self.cmd_kill, "kill <pid>        Termina un proceso")
@@ -222,7 +222,7 @@ class Shell:
     def _registrar_comandos_memoria(self) -> None:
         self.registrar("memoria", self.cmd_memoria, "memoria           Muestra el mapa de memoria (contigua y paginada)")
         self.registrar("asignar", self.cmd_asignar,
-                       "asignar <pid> <tamano> [contigua|paginada]   Reserva memoria para un proceso")
+                       "asignar <pid> <tamano_B> [contigua|paginada]   Reserva memoria (bytes) para un proceso")
         self.registrar("liberar", self.cmd_liberar, "liberar <pid> [contigua|paginada]   Libera la memoria de un proceso")
         self.registrar("traducir", self.cmd_traducir, "traducir <pid> <dir_virtual>   Dirección virtual -> física")
 
@@ -250,7 +250,7 @@ class Shell:
             return
         resultado = gestor_mem.asignar(pid, tamano)
         if tipo == "contigua":
-            self.imprimir(f"PID {pid}: {tamano} u. en la dirección base {resultado}")
+            self.imprimir(f"PID {pid}: {tamano} B en la dirección base {resultado} (B = bytes)")
         else:
             self.imprimir(f"PID {pid}: {len(resultado)} páginas en los marcos {resultado.marcos}")
 
@@ -266,7 +266,7 @@ class Shell:
             return
         pid, virtual = self._entero(args[0], "pid"), self._entero(args[1], "dir_virtual")
         fisica = self.mem_paginada.traducir_direccion(pid, virtual)
-        self.imprimir(f"PID {pid}: virtual {virtual} -> física {fisica}")
+        self.imprimir(f"PID {pid}: virtual {virtual} B -> física {fisica} B")
 
     # -- comandos base ----------------------------------------------------
     def cmd_help(self, args: list[str]) -> None:

@@ -1,31 +1,37 @@
 flowchart TD
     subgraph CREAR["crear nombre rafaga prioridad llegada"]
-        C1["Validar rafaga mayor que 0<br/>y llegada mayor o igual a 0"] --> C2["Asignar PID nuevo"]
+        CI(("Inicio")) --> C1["Validar rafaga mayor que 0<br/>y llegada mayor o igual a 0"] --> C2["Asignar PID nuevo"]
         C2 --> C3["Registrar en tabla de procesos"]
         C3 --> C4["Estado Nuevo a Listo<br/>agregar a cola listos"]
+        C4 --> CF(("Fin"))
     end
 
     subgraph FORK["fork pid"]
-        F1["Obtener padre"] --> F2{"¿padre Terminado?"}
+        FI(("Inicio")) --> F1["Obtener padre"] --> F2{"¿padre Terminado?"}
         F2 -- "Sí" --> FE["ErrorProceso: no se puede hacer fork"]
+        FE --> FF(("Fin"))
         F2 -- "No" --> F3["deepcopy del PCB<br/>copia PC y registros"]
         F3 --> F4["Hijo: PID nuevo, ppid = padre,<br/>estado Nuevo"]
         F4 --> F5["Admitir hijo: Nuevo a Listo"]
         F5 --> F6["Padre e hijo con registros aislados"]
+        F6 --> FF
     end
 
     subgraph EXEC["exec pid nombre rafaga"]
-        E1["Obtener proceso"] --> E2{"¿Terminado?"}
+        EI(("Inicio")) --> E1["Obtener proceso"] --> E2{"¿Terminado?"}
         E2 -- "Sí" --> EE["ErrorProceso"]
         E2 -- "No" --> E3{"¿rafaga dada y menor o igual a 0?"}
         E3 -- "Sí" --> EE2["ValueError"]
         E3 -- "No" --> E4["Cambiar nombre de imagen"]
         E4 --> E5["Reiniciar PC = 0 y registros AX-DX = 0"]
         E5 --> E6["Conserva PID y PPID"]
+        E6 --> EF(("Fin"))
+        EE --> EF
+        EE2 --> EF
     end
 
     subgraph KILL["kill pid"]
-        K1["gestor.terminar pid"] --> K2{"¿ya Terminado?"}
+        KI(("Inicio")) --> K1["gestor.terminar pid"] --> K2{"¿ya Terminado?"}
         K2 -- "Sí" --> KE["ErrorProceso"]
         K2 -- "No" --> K3{"¿dónde está?"}
         K3 -- "en ejecución" --> K4["Liberar CPU"]
@@ -35,4 +41,11 @@ flowchart TD
         K5 --> K7
         K6 --> K7
         K7 --> K8["Shell libera memoria contigua y paginada del PID"]
+        K8 --> KF(("Fin"))
+        KE --> KF
     end
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class CI,FI,EI,KI inicio
+    class CF,FF,EF,KF fin
