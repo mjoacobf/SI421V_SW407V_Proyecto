@@ -26,3 +26,10 @@ Por lo tanto, la decisión técnica ha sido construir **"NexusOS-Sim"**: un simu
 * **Escalabilidad Segura:** Nos permitirá probar permisos de archivos y simular la comunicación distribuida entre las diferentes agencias del banco antes de invertir en infraestructura real.
 
 **Conclusión:** Al final del proyecto, NexusBank tendrá un reporte fundamentado en datos cuantitativos generados por nuestro simulador en Python, determinando exactamente qué algoritmos debe adoptar el nuevo SO de sus servidores centrales para garantizar rapidez, coherencia y seguridad a sus millones de clientes.
+
+---
+
+## 4. Requisitos y Entorno
+* **Python**: 3.10 o superior
+* **Control de versiones**: Git & GitHub
+
