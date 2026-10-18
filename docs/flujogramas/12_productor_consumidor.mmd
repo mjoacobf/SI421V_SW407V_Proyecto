@@ -1,0 +1,51 @@
+flowchart TD
+    INI(("Inicio")) --> A["simular_productor<br/>productores, consumidores, items, capacidad"]
+    A --> B{"¿todos los parámetros mayores que 0?"}
+    B -- "No" --> BE["ValueError"]
+    B -- "Sí" --> C["Crear búfer acotado deque<br/>mutex = Semaphore 1<br/>vacios = Semaphore capacidad<br/>llenos = Semaphore 0"]
+    C --> D["Repartir consumos totales entre consumidores<br/>divmod: cada uno recibe su cuota"]
+    D --> E["Lanzar hilos productores y consumidores"]
+
+    E --> P0
+    E --> C0
+
+    subgraph PROD["Hilo productor"]
+        P0["Para cada ítem a producir"] --> P1["vacios.acquire<br/>esperar posición libre"]
+        P1 --> P2["mutex.acquire"]
+        P2 --> P3["Agregar ítem al búfer<br/>actualizar máxima ocupación<br/>registrar log"]
+        P3 --> P4["mutex.release"]
+        P4 --> P5["llenos.release"]
+        P5 --> P6{"¿faltan ítems?"}
+        P6 -- "Sí" --> P0
+        P6 -- "No" --> PF(["Productor termina"])
+    end
+
+    subgraph CONS["Hilo consumidor"]
+        C0["Para cada consumo de su cuota"] --> C1["llenos.acquire<br/>esperar ítem disponible"]
+        C1 --> C2["mutex.acquire"]
+        C2 --> C3["Sacar ítem del búfer<br/>registrar log"]
+        C3 --> C4["mutex.release"]
+        C4 --> C5["vacios.release"]
+        C5 --> C6{"¿falta cuota?"}
+        C6 -- "Sí" --> C0
+        C6 -- "No" --> CF(["Consumidor termina"])
+    end
+
+    PF --> J["join de todos los hilos"]
+    CF --> J
+    J --> V{"¿consumidos = producidos<br/>y ocupación máxima menor o igual a capacidad?"}
+    V -- "Sí" --> OK["Resumen: CORRECTO"]
+    V -- "No" --> KO["Resumen: INCORRECTO"]
+
+    NOTA["Orden vacios o llenos antes de mutex<br/>evita interbloqueo"]
+    NOTA -.-> P1
+    NOTA -.-> C1
+    FIN(("Fin"))
+    BE --> FIN
+    OK --> FIN
+    KO --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

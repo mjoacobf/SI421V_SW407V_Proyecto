@@ -1,0 +1,37 @@
+flowchart TD
+    INI(("Inicio")) --> A["python src/main.py"]
+    A --> B["Reconfigurar stdin y stdout a UTF-8"]
+    B --> C["Crear Shell<br/>registrar comandos base, procesos, sincronización y memoria"]
+    C --> D["Imprimir banner NexusOS-Sim"]
+    D --> E{"¿shell activo?"}
+    E -- "No" --> FIN(("Fin"))
+    E -- "Sí" --> F["Mostrar prompt nexus@sim:ruta$"]
+    F --> G["Leer línea de entrada"]
+    G --> H{"¿EOF?<br/>Ctrl+D o fin de pipe"}
+    H -- "Sí" --> FIN
+    H -- "No" --> I["shlex.split de la línea"]
+    I --> J{"¿sintaxis válida?"}
+    J -- "No" --> K["Imprimir error de sintaxis"]
+    K --> E
+    J -- "Sí" --> L{"¿línea vacía?"}
+    L -- "Sí" --> E
+    L -- "No" --> M{"¿comando registrado?"}
+    M -- "No" --> N["Imprimir: comando no encontrado"]
+    N --> E
+    M -- "Sí" --> O["Ejecutar función del comando con sus argumentos"]
+    O --> P{"¿lanzó excepción?"}
+    P -- "Sí" --> Q["Imprimir error: mensaje<br/>el shell no se cae"]
+    Q --> E
+    P -- "No" --> R{"¿comando exit?"}
+    R -- "Sí" --> S["activo = False<br/>Apagando NexusOS-Sim"]
+    S --> E
+    R -- "No" --> E
+    K --> E
+    N --> E
+    Q --> E
+    S --> E
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

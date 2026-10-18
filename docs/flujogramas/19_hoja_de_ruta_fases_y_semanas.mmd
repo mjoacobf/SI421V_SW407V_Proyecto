@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph F1["FASE 1: Fundamentos y arquitectura"]
+        direction TB
+        S1["Semana 1<br/>Repo Git, requirements, src, docs, tests,<br/>módulos vacíos"] --> S2["Semana 2<br/>shell.py y main.py<br/>CLI, ls, mkdir, cd, pwd, help, exit"]
+    end
+
+    subgraph F2["FASE 2: Gestión del procesador"]
+        direction TB
+        S3["Semana 3<br/>procesos.py: PCB, 5 estados,<br/>fork, exec, hilos"] --> S4["Semana 4<br/>planificador.py: FCFS, SJF,<br/>RR, Prioridad, métricas"]
+    end
+
+    subgraph F3["FASE 3: Concurrencia y memoria"]
+        direction TB
+        S5["Semana 5<br/>sincronizacion.py:<br/>Productor-Consumidor, Filósofos"] --> S6["Semana 6<br/>memoria.py: contigua,<br/>paginación, traducción"]
+    end
+
+    subgraph F4["PENDIENTE: siguientes fases"]
+        direction TB
+        S7["Semana 7<br/>Reemplazo de páginas<br/>FIFO, LRU, Óptimo"] --> S9["Semanas 9-10<br/>E/S y sistema de archivos<br/>con permisos"]
+        S9 --> S11["Semanas 11-13<br/>Seguridad, virtualización<br/>y sistemas distribuidos"]
+        S11 --> S15["Semana 15<br/>Entrega final integrada<br/>y sustentación"]
+    end
+
+    F1 --> F2 --> F3 --> F4
+
+    classDef hecho fill:#d4edda,stroke:#2e7d32,color:#000
+    classDef pend fill:#fff3cd,stroke:#b58900,color:#000,stroke-dasharray: 5 5
+    class S1,S2,S3,S4,S5,S6 hecho
+    class S7,S9,S11,S15 pend

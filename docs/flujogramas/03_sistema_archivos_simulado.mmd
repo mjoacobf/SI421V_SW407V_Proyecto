@@ -1,0 +1,39 @@
+flowchart TD
+    INI(("Inicio")) --> START["Comando de archivos"]
+    START --> CMD{"¿Cuál comando?"}
+
+    CMD -- "ls" --> LS["Listar directorio actual ordenado<br/>imprimir nombre/"]
+    CMD -- "pwd" --> PWD["Imprimir / + ruta actual"]
+
+    CMD -- "mkdir nombre" --> M1{"¿nombre vacío<br/>o contiene /?"}
+    M1 -- "Sí" --> ME1["Error: nombre inválido"]
+    M1 -- "No" --> M2{"¿ya existe?"}
+    M2 -- "Sí" --> ME2["Error: ya existe"]
+    M2 -- "No" --> M3["Crear directorio vacío en el árbol"]
+
+    CMD -- "cd destino" --> C1{"¿destino?"}
+    C1 -- "/" --> C2["ruta = vacía, ir a la raíz"]
+    C1 -- ".." --> C3{"¿ruta vacía?"}
+    C3 -- "No" --> C4["Quitar último componente de la ruta"]
+    C3 -- "Sí" --> C5["Permanecer en la raíz"]
+    C1 -- "otro" --> C6{"¿existe en el directorio actual?"}
+    C6 -- "Sí" --> C7["Agregar a la ruta"]
+    C6 -- "No" --> CE["Error: no existe el directorio"]
+
+    ME1 --> SH["Shell captura y muestra error:"]
+    ME2 --> SH
+    CE --> SH
+    FIN(("Fin"))
+    LS --> FIN
+    PWD --> FIN
+    M3 --> FIN
+    C2 --> FIN
+    C4 --> FIN
+    C5 --> FIN
+    C7 --> FIN
+    SH --> FIN
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

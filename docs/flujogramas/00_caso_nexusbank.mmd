@@ -1,0 +1,28 @@
+flowchart LR
+    CRISIS["Crisis de NexusBank<br/>sistema legacy colapsando"]
+    CRISIS --> P1["Cuello de botella FCFS<br/>efecto convoy"]
+    CRISIS --> P2["Condiciones de carrera<br/>saldos inconsistentes"]
+    CRISIS --> P3["Colapso de memoria RAM<br/>paginación ineficiente"]
+    CRISIS --> P4["I/O lento y desorganizado"]
+    CRISIS --> P5["Seguridad débil<br/>sin cifrado ni control de acceso"]
+
+    P1 --> S1["Módulo Planificador<br/>FCFS, SJF, Round Robin, Prioridad"]
+    P2 --> S2["Módulo Sincronización<br/>semáforos y mutex"]
+    P3 --> S3["Módulo Memoria<br/>contigua y paginación"]
+    P4 --> S4["Módulo E/S y archivos<br/>pendiente"]
+    P5 --> S5["Módulo Seguridad y distribuidos<br/>pendiente"]
+
+    S1 --> SIM["NexusOS-Sim<br/>simulador en Python"]
+    S2 --> SIM
+    S3 --> SIM
+    S4 -.-> SIM
+    S5 -.-> SIM
+
+    SIM --> REP["Reporte cuantitativo<br/>algoritmos recomendados para el nuevo SO"]
+
+    classDef hecho fill:#d4edda,stroke:#2e7d32,color:#000
+    classDef pend fill:#fff3cd,stroke:#b58900,color:#000,stroke-dasharray: 5 5
+    classDef prob fill:#f8d7da,stroke:#b71c1c,color:#000
+    class P1,P2,P3,P4,P5,CRISIS prob
+    class S1,S2,S3,SIM,REP hecho
+    class S4,S5 pend

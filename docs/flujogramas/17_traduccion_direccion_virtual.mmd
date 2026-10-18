@@ -1,0 +1,23 @@
+flowchart TD
+    INI(("Inicio")) --> A["traducir pid dir_virtual"]
+    A --> B["Obtener pid<br/>acepta Proceso o entero"]
+    B --> C{"¿el PID tiene tabla de páginas?"}
+    C -- "No" --> E1["SegmentationFault:<br/>sin espacio de direcciones"]
+    C -- "Sí" --> D{"¿0 menor o igual a dir_virtual<br/>menor que tamaño lógico?"}
+    D -- "No" --> E2["SegmentationFault:<br/>dirección fuera de rango"]
+    D -- "Sí" --> F["página, desplazamiento =<br/>divmod dir_virtual, tam_pagina"]
+    F --> G["marco = tabla.marcos[página]"]
+    G --> H["física = marco x tam_pagina + desplazamiento"]
+    H --> I["Imprimir virtual a física"]
+    I --> FIN(("Fin"))
+    E1 --> S["Shell muestra error:"]
+    S --> FIN
+    E2 --> S
+
+    EJ["Ejemplo con tam_pagina = 256<br/>virtual 300: página 1, desplazamiento 44<br/>si página 1 está en marco 5, física = 1324"]
+    EJ -.-> F
+
+    classDef inicio fill:#2e7d32,stroke:#1b5e20,color:#ffffff
+    classDef fin fill:#c62828,stroke:#7f0000,color:#ffffff
+    class INI inicio
+    class FIN fin

@@ -1,0 +1,34 @@
+sequenceDiagram
+    actor U as Usuario
+    participant SH as Shell
+    participant GP as GestorProcesos
+    participant PL as Planificador
+    participant MP as GestorPaginacion
+
+    U->>SH: crear web 24
+    SH->>GP: crear web, 24
+    GP-->>SH: PID 1 en Listo
+    U->>SH: crear saldo 3
+    SH->>GP: crear saldo, 3
+    GP-->>SH: PID 2 en Listo
+    U->>SH: despachar
+    SH->>GP: despachar
+    GP-->>SH: CPU asignada al PID 1
+    U->>SH: asignar 1 1000 paginada
+    SH->>MP: asignar 1, 1000
+    MP-->>SH: 4 páginas en marcos 0 a 3
+    U->>SH: traducir 1 300
+    SH->>MP: traducir_direccion 1, 300
+    MP-->>SH: dirección física 300
+    U->>SH: planificar todos 4
+    SH->>GP: listar procesos no terminados
+    GP-->>SH: lista de procesos
+    SH->>PL: todos quantum 4
+    PL-->>SH: resultados FCFS, SJF, RR, Prioridad
+    SH-->>U: reportes y comparativa
+    U->>SH: kill 1
+    SH->>GP: terminar 1
+    SH->>MP: liberar 1
+    SH-->>U: proceso terminado y memoria liberada
+    U->>SH: exit
+    SH-->>U: Apagando NexusOS-Sim
