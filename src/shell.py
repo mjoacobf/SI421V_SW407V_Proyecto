@@ -11,7 +11,8 @@ import sys
 from typing import Callable, TextIO
 
 from demo_hilos import demo_fork, demo_hilos
-from memoria import ErrorMemoria, GestorMemoriaContigua, GestorPaginacion
+from memoria import (ALGORITMOS_REEMPLAZO, ErrorMemoria, GestorMemoriaContigua, GestorPaginacion,
+                     reemplazo_paginas, reporte_reemplazo)
 from planificador import Planificador
 from procesos import Estado, GestorProcesos
 from sincronizacion import filosofos, productor_consumidor
@@ -225,6 +226,8 @@ class Shell:
                        "asignar <pid> <tamano_B> [contigua|paginada]   Reserva memoria (bytes) para un proceso")
         self.registrar("liberar", self.cmd_liberar, "liberar <pid> [contigua|paginada]   Libera la memoria de un proceso")
         self.registrar("traducir", self.cmd_traducir, "traducir <pid> <dir_virtual>   Dirección virtual -> física")
+        self.registrar("reemplazo", self.cmd_reemplazo,
+                       "reemplazo <marcos> <p1 p2 ...> [fifo|lru|optimo|todos]   Compara reemplazo de páginas")
 
     def cmd_memoria(self, args: list[str]) -> None:
         self.imprimir(self.mem_contigua.mapa_texto())
@@ -267,6 +270,19 @@ class Shell:
         pid, virtual = self._entero(args[0], "pid"), self._entero(args[1], "dir_virtual")
         fisica = self.mem_paginada.traducir_direccion(pid, virtual)
         self.imprimir(f"PID {pid}: virtual {virtual} B -> física {fisica} B")
+
+    def cmd_reemplazo(self, args: list[str]) -> None:
+        modo = "todos"
+        if args and args[-1].lower() in (*ALGORITMOS_REEMPLAZO, "todos"):
+            modo = args[-1].lower()
+            args = args[:-1]
+        if len(args) < 2:
+            self.imprimir("uso: reemplazo <marcos> <p1 p2 ...> [fifo|lru|optimo|todos]")
+            return
+        marcos = self._entero(args[0], "marcos")
+        refs = [self._entero(a, "pagina") for a in args[1:]]
+        algoritmos = ALGORITMOS_REEMPLAZO if modo == "todos" else (modo,)
+        self.imprimir(reporte_reemplazo([reemplazo_paginas(a, refs, marcos) for a in algoritmos]))
 
     # -- comandos base ----------------------------------------------------
     def cmd_help(self, args: list[str]) -> None:

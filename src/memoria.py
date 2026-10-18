@@ -189,3 +189,77 @@ class GestorPaginacion:
                           f"frag. interna {self.fragmentacion_interna(pid)} B): "
                           + ", ".join(f"p{p}->m{m}" for p, m in enumerate(tabla.marcos)))
         return "\n".join(lineas)
+
+
+# ---------------------------------------------------------------------------
+# Reemplazo de páginas (memoria virtual): FIFO, LRU y Óptimo
+# ---------------------------------------------------------------------------
+ALGORITMOS_REEMPLAZO = ("fifo", "lru", "optimo")
+
+
+@dataclass
+class ResultadoReemplazo:
+    algoritmo: str
+    num_marcos: int
+    referencias: list[int]
+    fallos: int
+    # (página referenciada, ¿fallo?, página expulsada o None, marcos tras el acceso)
+    pasos: list[tuple[int, bool, int | None, list[int]]]
+
+    @property
+    def tasa_fallos(self) -> float:
+        return self.fallos / len(self.referencias) if self.referencias else 0.0
+
+
+def reemplazo_paginas(algoritmo: str, referencias: list[int], num_marcos: int) -> ResultadoReemplazo:
+    """Simula el reemplazo de páginas sobre una cadena de referencias.
+
+    FIFO expulsa la página más antigua en memoria; LRU la menos recientemente
+    usada; Óptimo la que se volverá a usar más tarde (o nunca).
+    """
+    algoritmo = algoritmo.lower()
+    if algoritmo not in ALGORITMOS_REEMPLAZO:
+        raise ValueError(f"algoritmo desconocido: {algoritmo} (use fifo, lru u optimo)")
+    if num_marcos <= 0:
+        raise ValueError("el número de marcos debe ser positivo")
+    if any(p < 0 for p in referencias):
+        raise ValueError("las páginas deben ser enteros no negativos")
+
+    marcos: list[int] = []  # orden de llegada (FIFO) o de uso, de menos a más reciente (LRU)
+    pasos: list[tuple[int, bool, int | None, list[int]]] = []
+    fallos = 0
+    for i, pag in enumerate(referencias):
+        expulsada = None
+        fallo = pag not in marcos
+        if fallo:
+            fallos += 1
+            if len(marcos) >= num_marcos:
+                if algoritmo == "optimo":
+                    futuro = referencias[i + 1:]
+                    victima = max(marcos, key=lambda q: futuro.index(q) if q in futuro else len(futuro) + 1)
+                else:  # fifo y lru: la víctima es la primera de la lista
+                    victima = marcos[0]
+                marcos.remove(victima)
+                expulsada = victima
+            marcos.append(pag)
+        elif algoritmo == "lru":
+            marcos.remove(pag)
+            marcos.append(pag)
+        pasos.append((pag, fallo, expulsada, list(marcos)))
+    return ResultadoReemplazo(algoritmo, num_marcos, list(referencias), fallos, pasos)
+
+
+def comparar_reemplazo(referencias: list[int], num_marcos: int) -> list[ResultadoReemplazo]:
+    return [reemplazo_paginas(a, referencias, num_marcos) for a in ALGORITMOS_REEMPLAZO]
+
+
+def reporte_reemplazo(resultados: list[ResultadoReemplazo]) -> str:
+    r0 = resultados[0]
+    lineas = [f"Reemplazo de páginas: {r0.num_marcos} marcos, {len(r0.referencias)} referencias",
+              f"Cadena: {' '.join(map(str, r0.referencias))}",
+              f"{'ALGORITMO':<10}{'FALLOS':>8}{'TASA':>9}"]
+    for r in resultados:
+        lineas.append(f"{r.algoritmo.upper():<10}{r.fallos:>8}{r.tasa_fallos:>8.1%}")
+    mejor = min(resultados, key=lambda r: r.fallos)
+    lineas.append(f"Menos fallos: {mejor.algoritmo.upper()}")
+    return "\n".join(lineas)
